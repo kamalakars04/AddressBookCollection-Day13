@@ -68,18 +68,18 @@
             // Returns no record found if address book is empty
             if (addressBookList.Count == 0)
             {
-                Console.WriteLine("No record found");
+                Console.WriteLine("\nNo record found");
                 return;
             }
 
             // Get the name of city from user
-            Console.WriteLine("Enter the city name to search for contact");
+            Console.WriteLine("\nEnter the city name to search for contact");
             string cityName = Console.ReadLine().ToLower();
 
             // Get the person name to be searched
-            Console.WriteLine("Enter the person firstname to be searched");
+            Console.WriteLine("\nEnter the person firstname to be searched");
             string firstName = Console.ReadLine().ToLower();
-            Console.WriteLine("Enter the person lastname to be searched");
+            Console.WriteLine("\nEnter the person lastname to be searched");
             string lastName = Console.ReadLine().ToLower();
 
             try
@@ -104,9 +104,61 @@
             }
             catch
             {
-                Console.WriteLine("No contacts found of given search");
+                Console.WriteLine("\nNo contacts found of given search");
                 return;
             }
+        }
+
+        /// <summary>
+        /// Views all the contacts of a city.
+        /// </summary>
+        public void ViewAllByCity()
+        {
+            if (addressBookList.Count == 0)
+            {
+                Console.WriteLine("\nNo record found");
+                return;
+            }
+
+            // Get the name of city from user
+            Console.WriteLine("\nEnter the city name to search for contact");
+            string cityName = Console.ReadLine().ToLower();
+
+            // If the given city doesnt exist
+            if (!(cityToContactMap.ContainsKey(cityName)))
+            {
+                Console.WriteLine("\nNo contacts exist in the city");
+                return;
+            }
+
+            foreach (ContactDetails contact in cityToContactMap[cityName])
+                AddressBook.ToString(contact);
+        }
+
+        /// <summary>
+        /// Views all the contacts of a state
+        /// </summary>
+        public void ViewAllByState()
+        {
+            if (addressBookList.Count == 0)
+            {
+                Console.WriteLine("\nNo record found");
+                return;
+            }
+
+            // Get the name of city from user
+            Console.WriteLine("\nEnter the state name to search for contact");
+            string stateName = Console.ReadLine().ToLower();
+
+            // If the given city doesnt exist
+            if (!(stateToContactMap.ContainsKey(stateName)))
+            {
+                Console.WriteLine("\nNo contacts exist in the city");
+                return;
+            }
+
+            foreach (ContactDetails contact in stateToContactMap[stateName])
+                AddressBook.ToString(contact);
         }
 
         /// <summary>
@@ -117,18 +169,18 @@
             // Returns no record found if address book is empty
             if (addressBookList.Count == 0)
             {
-                Console.WriteLine("No record found");
+                Console.WriteLine("\nNo record found");
                 return;
             }
 
             // Get the name of city from user
-            Console.WriteLine("Enter the state name to search for contact");
+            Console.WriteLine("\nEnter the state name to search for contact");
             string stateName = Console.ReadLine().ToLower();
 
             // Get the person name to be searched
-            Console.WriteLine("Enter the person firstname to be searched");
+            Console.WriteLine("\nEnter the person firstname to be searched");
             string firstName = Console.ReadLine().ToLower();
-            Console.WriteLine("Enter the person lastname to be searched");
+            Console.WriteLine("\nEnter the person lastname to be searched");
             string lastName = Console.ReadLine().ToLower();
 
             try
