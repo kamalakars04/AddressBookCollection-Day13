@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace AddressBookSystem
+﻿namespace AddressBookSystem
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Text;
+
     public class ContactDetails
     {
         // Variables
@@ -15,6 +15,7 @@ namespace AddressBookSystem
         public string zip;
         public string phoneNumber;
         public string email;
+        public string nameOfAddressBook;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ContactDetails"/> class.
@@ -27,7 +28,8 @@ namespace AddressBookSystem
         /// <param name="zip">The zip.</param>
         /// <param name="phoneNumber">The phone number.</param>
         /// <param name="email">The email.</param>
-        public ContactDetails(string firstName, string lastName, string address, string city, string state, string zip, string phoneNumber, string email)
+        public ContactDetails(string firstName, string lastName, string address, string city, string state, string zip, 
+                               string phoneNumber, string email, string nameOfAddressBook)
         {
             this.firstName = firstName.ToLower();
             this.lastName = lastName.ToLower();
@@ -37,6 +39,7 @@ namespace AddressBookSystem
             this.zip = zip;
             this.phoneNumber = phoneNumber;
             this.email = email;
+            this.nameOfAddressBook = nameOfAddressBook;
         }
 
         /// <summary>
@@ -51,20 +54,27 @@ namespace AddressBookSystem
             // if the list is null
             if (obj == null)
                 return false;
+            try
+            {
+                // Get the contacts from list with same name
+                var duplicates = ((List<ContactDetails>)obj).Find(contact => ((contact.firstName).ToLower() == (this.firstName).ToLower()
+                                                                        && (contact.lastName).ToLower() == (this.lastName).ToLower()
+                                                                        && contact.nameOfAddressBook == this.nameOfAddressBook));
 
-            // if the object passed is not a list
-            if (!(obj is List<ContactDetails>))
-                return true;
-
-            // Get the contacts from list with same name
-            var duplicates = ((List<ContactDetails>)obj).FindAll(contact => ((contact.firstName).ToLower() == (this.firstName).ToLower()
-                                                                    && (contact.lastName).ToLower() == (this.lastName).ToLower()));
-            
-            // Return true if duplicate is found else false
-            if (duplicates.Count > 0)
-                return true;
-            else
-                return false;
+                // Return true if duplicate is found else false
+                if (duplicates != null)
+                    return true;
+                else
+                    return false;
+            }
+            catch
+            {
+                // Get the contacts from list with same name
+                var contact = ((ContactDetails)obj);
+                return ((contact.firstName).ToLower() == (this.firstName).ToLower()
+                        && (contact.lastName).ToLower() == (this.lastName).ToLower()
+                        && contact.nameOfAddressBook == this.nameOfAddressBook);
+            }
         }
     }
 }

@@ -33,7 +33,7 @@
         // Object initialisation
         private readonly Logger logger = LogManager.GetCurrentClassLogger();
         public List<ContactDetails> contactList = new List<ContactDetails>();
-
+        
         /// <summary>
         /// Stores the name of address book when an object is initiated
         /// </summary>
@@ -62,11 +62,11 @@
 
             // Getting city name
             Console.WriteLine("\nEnter The City Name of Contact");
-            city = Console.ReadLine();
+            city = Console.ReadLine().ToLower();
 
             // Getting state name
             Console.WriteLine("\nEnter The State Name of Contact");
-            state = Console.ReadLine();
+            state = Console.ReadLine().ToLower();
 
             // Getting zip of locality
             Console.WriteLine("\nEnter the Zip of Locality of Contact");
@@ -81,7 +81,7 @@
             email = Console.ReadLine();
 
             // Creating an instance of contact with given details
-            ContactDetails addNewContact = new ContactDetails(firstName, lastName, address, city, state, zip, phoneNumber, email);
+            ContactDetails addNewContact = new ContactDetails(firstName, lastName, address, city, state, zip, phoneNumber, email, nameOfAddressBook);
             
             // Checking for duplicates with the equals method
             // Loop continues till the given contact doesnt equal to any available contact
@@ -101,7 +101,7 @@
                     firstName = Console.ReadLine();
                     Console.WriteLine("Enter new last name");
                     lastName = Console.ReadLine();
-                    addNewContact = new ContactDetails(firstName, lastName, address, city, state, zip, phoneNumber, email);
+                    addNewContact = new ContactDetails(firstName, lastName, address, city, state, zip, phoneNumber, email, nameOfAddressBook);
                 }
                 else
                     return;
@@ -109,8 +109,12 @@
 
             // Adding the contact to list
             contactList.Add(addNewContact);
-            Console.WriteLine("\nContact Added");
-            logger.Info("User created a new contact");
+
+            // Adding contact to city dictionary
+            AddressBookDetails.AddToCityDictionary(city, addNewContact);
+
+            // Adding contact to state dictionary
+            AddressBookDetails.AddToStateDictionary(state, addNewContact);
         }
 
         /// <summary>
@@ -129,10 +133,10 @@
                 logger.Info("User searched for a contact " + name);
 
                 // Search the contact by name
-                contactSerialNum = SearchByName(name);
+                ContactDetails contact = SearchByName(name);
 
                 // Print the details of the contact after search
-                ToString(contactSerialNum);
+                ToString(contact);
             }
         }
 
@@ -154,13 +158,13 @@
             logger.Info("User tried to update contact" + name);
 
             // Search the name
-            int contactSerialNum = SearchByName(name);
+            ContactDetails contact = SearchByName(name);
 
             // To print details of searched contact
-            ToString(contactSerialNum);
+            ToString(contact);
             
             // If contact doesnt exist
-            if (contactSerialNum < 0)
+            if (contact == null)
                 return;
             int updateAttributeNum = 0;
 
@@ -188,15 +192,15 @@
                 case UPDATE_FIRST_NAME:
 
                     // Store the firstname of given contact in variable
-                    firstName = contactList[contactSerialNum].firstName;
+                    firstName = contact.firstName;
 
                     // Update the contact with given name
-                    contactList[contactSerialNum].firstName = newValue;
+                    contact.firstName = newValue;
 
                     // If duplicate contact exists with that name then revert the operation
-                    if (contactList[contactSerialNum].Equals(contactList))
+                    if (contact.Equals(contactList))
                     {
-                        contactList[contactSerialNum].firstName = firstName;
+                        contact.firstName = firstName;
                         Console.WriteLine("Contact already exists with that name");
                         return;
                     }
@@ -204,36 +208,52 @@
                 case UPDATE_LAST_NAME:
 
                     // Store the LastName of given contact in variable
-                    lastName = contactList[contactSerialNum].firstName;
+                    lastName = contact.lastName;
 
                     // Update the contact with given name
-                    contactList[contactSerialNum].firstName = newValue;
+                    contact.lastName = newValue;
 
                     // If duplicate contact exists with that name then revert the operation
-                    if (contactList[contactSerialNum].Equals(contactList))
+                    if (contact.Equals(contactList))
                     {
-                        contactList[contactSerialNum].lastName = lastName;
+                        contact.lastName = lastName;
                         Console.WriteLine("Contact already exists with that name");
                         return;
                     }
                     break;
                 case UPDATE_ADDRESS:
-                    contactList[contactSerialNum].address = newValue;
+                    contact.address = newValue;
                     break;
                 case UPDATE_CITY:
-                    contactList[contactSerialNum].city = newValue;
+
+                    // Remove the contact from city dictionary
+                    AddressBookDetails.cityToContactMap[contact.city].Remove(contact);
+
+                    // Update the contact city
+                    contact.city = newValue;
+
+                    // Add to city dictionary
+                    AddressBookDetails.AddToCityDictionary(contact.city, contact);
                     break;
                 case UPDATE_STATE:
-                    contactList[contactSerialNum].state = newValue;
+
+                    // Remove the contact from state dictionary
+                    AddressBookDetails.stateToContactMap[contact.state].Remove(contact);
+
+                    // Update the contact state
+                    contact.state = newValue;
+
+                    // Add to state dictionary
+                    AddressBookDetails.AddToStateDictionary(contact.state, contact); 
                     break;
                 case UPDATE_ZIP:
-                    contactList[contactSerialNum].zip = newValue;
+                    contact.zip = newValue;
                     break;
                 case UPDATE_PHONE_NUMBER:
-                    contactList[contactSerialNum].phoneNumber = newValue;
+                    contact.phoneNumber = newValue;
                     break;
                 case UPDATE_EMAIL:
-                    contactList[contactSerialNum].email = newValue;
+                    contact.email = newValue;
                     break;
                 default:
                     Console.WriteLine("Invalid Entry");
@@ -261,14 +281,15 @@
             logger.Info("User requested to remove contact " + name);
 
             // Search for the contact
-            int contactSerialNum = SearchByName(name);
+            ContactDetails contact = SearchByName(name);
 
             // Print the details of contact for confirmation
-            ToString(contactSerialNum);
+            ToString(contact);
 
             // If contact doesnt exist then exit
-            if (contactSerialNum < 0)
+            if (contact == null)
                 return;
+
             // Asking for confirmation to delete contact
             // If user says yes(y) then delete the contact
             Console.WriteLine("Press y to confirm delete or any other key to abort");
@@ -301,33 +322,32 @@
 
             // Display all contact details in list
             foreach (ContactDetails contact in contactList)
-                ToString(contactList.IndexOf(contact));
+                ToString(contact);
         }
 
         /// <summary>
         /// Display the details of given contact
         /// </summary>
         /// <param name="contactSerialNum">The contact serial number in list.</param>
-        private void ToString(int contactSerialNum)
+        public static void ToString(ContactDetails contact)
         {
-            if (contactSerialNum < 0)
+            if (contact == null)
             {
                 Console.WriteLine("Contact Not found");
-                logger.Error("Contact not found");
                 return;
             }
             
             // Display all the atributes of contact
             int rowNum = 1;
-            Console.WriteLine("\nname of contact is {0}", contactList[contactSerialNum].firstName + " " + contactList[contactSerialNum].lastName);
-            Console.WriteLine("{0}-firstname is {1}", rowNum++, contactList[contactSerialNum].firstName);
-            Console.WriteLine("{0}-lastname is {1}", rowNum++, contactList[contactSerialNum].lastName);
-            Console.WriteLine("{0}-address is {1}", rowNum++, contactList[contactSerialNum].address);
-            Console.WriteLine("{0}-city is {1}", rowNum++, contactList[contactSerialNum].city);
-            Console.WriteLine("{0}-state is {1}", rowNum++, contactList[contactSerialNum].state);
-            Console.WriteLine("{0}-zip is {1}", rowNum++, contactList[contactSerialNum].zip);
-            Console.WriteLine("{0}-phoneNumber is {1}", rowNum++, contactList[contactSerialNum].phoneNumber);
-            Console.WriteLine("{0}-email is {1}", rowNum++, contactList[contactSerialNum].email);
+            Console.WriteLine("\nname of contact is {0}", contact.firstName + " " + contact.lastName);
+            Console.WriteLine("{0}-firstname is {1}", rowNum++, contact.firstName);
+            Console.WriteLine("{0}-lastname is {1}", rowNum++, contact.lastName);
+            Console.WriteLine("{0}-address is {1}", rowNum++, contact.address);
+            Console.WriteLine("{0}-city is {1}", rowNum++, contact.city);
+            Console.WriteLine("{0}-state is {1}", rowNum++, contact.state);
+            Console.WriteLine("{0}-zip is {1}", rowNum++, contact.zip);
+            Console.WriteLine("{0}-phoneNumber is {1}", rowNum++, contact.phoneNumber);
+            Console.WriteLine("{0}-email is {1}", rowNum++, contact.email);
         }
 
         /// <summary>
@@ -335,12 +355,15 @@
         /// </summary>
         /// <param name="name">The name entered  by user to search.</param>
         /// <returns></returns>
-        private int SearchByName(string name)
+        private ContactDetails SearchByName(string name)
         {
             // If the list is empty
             if (contactList.Count == 0)
-                return -1;
+                return null;
             int numOfContactsSearched = 0;
+
+            // storing the count of contacts with searched name string
+            int numOfConatctsWithNameSearched = 0;
 
             // Search if Contacts have the given string in name
             foreach (ContactDetails contact in contactList)
@@ -348,24 +371,23 @@
                 // Incrementing the no of contacts searched
                 numOfContactsSearched++;
 
-                // storing the count of contacts with searched name string
-                int numOfConatctsWithNameSearched = 0;
-
                 // If contact name matches exactly then it returns the index of that contact
                 if ((contact.firstName + " " + contact.lastName).Equals(name))
-                    return contactList.IndexOf(contact);
+                    return contact;
 
                 // If a part of contact name matches then we would ask them to enter accurately
                 if ((contact.firstName + " " + contact.lastName).Contains(name))
                 {
                     logger.Error("Multiple contacts exists with given name");
-                    numOfConatctsWithNameSearched++; // num of contacts having search string
+
+                    // num of contacts having search string
+                    numOfConatctsWithNameSearched++; 
                     Console.WriteLine("\nname of contact is {0}", contact.firstName + " " + contact.lastName);
                 }
 
                 // If string is not part of any name then exit
                 if (numOfContactsSearched == contactList.Count() && numOfConatctsWithNameSearched == 0)
-                    return -1;
+                    return null;
             }
 
             // Ask to enter name accurately
@@ -374,7 +396,7 @@
 
             // To exit
             if (name.ToLower() == "e")
-                return -1;
+                return null;
 
             // To continue search with new name
             return SearchByName(name);

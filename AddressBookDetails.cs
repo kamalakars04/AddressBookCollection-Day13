@@ -1,11 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using NLog;
-
-namespace AddressBookSystem
+﻿namespace AddressBookSystem
 {
-     class AddressBookDetails : IAddressBook
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using NLog;
+
+    class AddressBookDetails : IAddressBook
     {
         private readonly Logger logger = LogManager.GetCurrentClassLogger();
         string nameOfAddressBook;
@@ -15,6 +16,9 @@ namespace AddressBookSystem
         const string REMOVE_CONTACT = "remove";
         const string GET_ALL_CONTACTS = "view";
         public Dictionary<string, AddressBook> addressBookList = new Dictionary<string, AddressBook>();
+        public static Dictionary<string, List<ContactDetails>> cityToContactMap = new Dictionary<string, List<ContactDetails>>();
+        public static Dictionary<string, List<ContactDetails>> stateToContactMap = new Dictionary<string, List<ContactDetails>>();
+
 
         /// <summary>
         /// Gets the address book.
@@ -54,6 +58,105 @@ namespace AddressBookSystem
                 logger.Info("User aborted the operation to create new Address book with name : " + nameOfAddressBook);
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Searches the in city.
+        /// </summary>
+        public void SearchInCity()
+        {
+            // Returns no record found if address book is empty
+            if (addressBookList.Count == 0)
+            {
+                Console.WriteLine("No record found");
+                return;
+            }
+
+            // Get the name of city from user
+            Console.WriteLine("Enter the city name to search for contact");
+            string cityName = Console.ReadLine().ToLower();
+
+            // Get the person name to be searched
+            Console.WriteLine("Enter the person firstname to be searched");
+            string firstName = Console.ReadLine().ToLower();
+            Console.WriteLine("Enter the person lastname to be searched");
+            string lastName = Console.ReadLine().ToLower();
+
+            try
+            {
+                // Get the list of contacts whose city and name matches with search
+                var searchResult = cityToContactMap[cityName].FindAll(contact => contact.firstName.ToLower() == firstName
+                                                                      && contact.lastName.ToLower() == lastName);
+
+                // If no contacts exist
+                if (searchResult.Count() == 0)
+                {
+                    Console.WriteLine("\nNo contacts found of given search", nameOfAddressBook);
+                    return;
+                }
+                Console.Write("\nThe contacts found in of given search are :");
+
+                // Display the search results
+                foreach (ContactDetails contact in searchResult)
+                {
+                    AddressBook.ToString(contact);
+                }
+            }
+            catch
+            {
+                Console.WriteLine("No contacts found of given search");
+                return;
+            }
+        }
+
+        /// <summary>
+        /// Searches the state of the in.
+        /// </summary>
+        public void SearchInState()
+        {
+            // Returns no record found if address book is empty
+            if (addressBookList.Count == 0)
+            {
+                Console.WriteLine("No record found");
+                return;
+            }
+
+            // Get the name of city from user
+            Console.WriteLine("Enter the state name to search for contact");
+            string stateName = Console.ReadLine().ToLower();
+
+            // Get the person name to be searched
+            Console.WriteLine("Enter the person firstname to be searched");
+            string firstName = Console.ReadLine().ToLower();
+            Console.WriteLine("Enter the person lastname to be searched");
+            string lastName = Console.ReadLine().ToLower();
+
+            try
+            {
+                // Get the list of contacts whose city and name matches with search
+                var searchResult = stateToContactMap[stateName].FindAll(contact => contact.firstName.ToLower() == firstName
+                                                                      && contact.lastName.ToLower() == lastName);
+
+                // If no contacts exist
+                if (searchResult.Count() == 0)
+                {
+                    Console.WriteLine("\nNo contacts found in addressbook {0} of given search", nameOfAddressBook);
+                    return;
+                }
+                Console.Write("\nThe contacts found in addressbook {0} of given search are :", nameOfAddressBook);
+
+                // Display the search results
+                foreach (ContactDetails contact in searchResult)
+                {
+                    AddressBook.ToString(contact);
+                }
+            }
+            catch
+            {
+                Console.WriteLine("No contacts found in addressbook {0} of given search", nameOfAddressBook);
+                return;
+            }
+
         }
 
         /// <summary>
@@ -162,6 +265,36 @@ namespace AddressBookSystem
                     return;
                 }
             }
+        }
+
+        /// <summary>
+        /// Adds to city dictionary.
+        /// </summary>
+        /// <param name="cityName">Name of the city.</param>
+        /// <param name="contact">The contact.</param>
+        public static void AddToCityDictionary(string cityName, ContactDetails contact)
+        {
+            // Check if the map already has city key
+            if (!(cityToContactMap.ContainsKey(cityName)))
+                cityToContactMap.Add(cityName, new List<ContactDetails>());
+
+            // Add the contact to list of respective city map
+            cityToContactMap[cityName].Add(contact);
+        }
+
+        /// <summary>
+        /// Adds to state dictionary.
+        /// </summary>
+        /// <param name="stateName">Name of the state.</param>
+        /// <param name="contact">The contact.</param>
+        public static void AddToStateDictionary(string stateName, ContactDetails contact)
+        {
+            // Check if the map already has state key
+            if (!stateToContactMap.ContainsKey(stateName))
+                stateToContactMap.Add(stateName, new List<ContactDetails>());
+
+            // Add the contact to list of respective city map
+            stateToContactMap[stateName].Add(contact);
         }
      }
 }
