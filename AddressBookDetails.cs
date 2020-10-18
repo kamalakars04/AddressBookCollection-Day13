@@ -10,11 +10,15 @@
     {
         private readonly Logger logger = LogManager.GetCurrentClassLogger();
         string nameOfAddressBook;
+
+        // Constants
         const string ADD_CONTACT = "add";
         const string UPDATE_CONTACT = "update";
         const string SEARCH_CONTACT = "search";
         const string REMOVE_CONTACT = "remove";
         const string GET_ALL_CONTACTS = "view";
+
+        // Collection Decleration
         public Dictionary<string, AddressBook> addressBookList = new Dictionary<string, AddressBook>();
         public static Dictionary<string, List<ContactDetails>> cityToContactMap = new Dictionary<string, List<ContactDetails>>();
         public static Dictionary<string, List<ContactDetails>> stateToContactMap = new Dictionary<string, List<ContactDetails>>();
@@ -110,6 +114,23 @@
         }
 
         /// <summary>
+        /// Counts all by city.
+        /// </summary>
+        internal void CountAllByCity()
+        {
+            // Returns no record found if address book is empty
+            if (addressBookList.Count == 0)
+            {
+                Console.WriteLine("\nNo record found");
+                return;
+            }
+
+            // To get count of contacts in all cities
+            foreach(KeyValuePair<string, List<ContactDetails>> keyValuePair in cityToContactMap)
+            Console.WriteLine("No of contacts in city {0} is {1}",keyValuePair.Key, keyValuePair.Value.Count());
+        }
+
+        /// <summary>
         /// Views all the contacts of a city.
         /// </summary>
         public void ViewAllByCity()
@@ -159,6 +180,23 @@
 
             foreach (ContactDetails contact in stateToContactMap[stateName])
                 AddressBook.ToString(contact);
+        }
+
+        /// <summary>
+        /// Counts the state of all by.
+        /// </summary>
+        internal void CountAllByState()
+        {
+            // Returns no record found if address book is empty
+            if (addressBookList.Count == 0)
+            {
+                Console.WriteLine("\nNo record found");
+                return;
+            }
+
+            // To get count of contacts in all cities
+            foreach (KeyValuePair<string, List<ContactDetails>> keyValuePair in stateToContactMap)
+                Console.WriteLine("No of contacts in city {0} is {1}", keyValuePair.Key, keyValuePair.Value.Count());
         }
 
         /// <summary>
