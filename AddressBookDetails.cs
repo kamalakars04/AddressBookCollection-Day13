@@ -23,7 +23,6 @@
         public static Dictionary<string, List<ContactDetails>> cityToContactMap = new Dictionary<string, List<ContactDetails>>();
         public static Dictionary<string, List<ContactDetails>> stateToContactMap = new Dictionary<string, List<ContactDetails>>();
 
-
         /// <summary>
         /// Gets the address book.
         /// </summary>
