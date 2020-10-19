@@ -94,7 +94,7 @@
                 // If no contacts exist
                 if (searchResult.Count() == 0)
                 {
-                    Console.WriteLine("\nNo contacts found of given search", nameOfAddressBook);
+                    Console.WriteLine("\nNo contacts found of given search");
                     return;
                 }
                 Console.Write("\nThe contacts found in of given search are :");
@@ -126,7 +126,7 @@
 
             // To get count of contacts in all cities
             foreach(KeyValuePair<string, List<ContactDetails>> keyValuePair in cityToContactMap)
-            Console.WriteLine("No of contacts in city {0} is {1}",keyValuePair.Key, keyValuePair.Value.Count());
+                Console.WriteLine("No of contacts in city {0} is {1}",keyValuePair.Key, keyValuePair.Value.Count());
         }
 
         /// <summary>
@@ -173,7 +173,7 @@
             // If the given city doesnt exist
             if (!(stateToContactMap.ContainsKey(stateName)))
             {
-                Console.WriteLine("\nNo contacts exist in the city");
+                Console.WriteLine("\nNo contacts exist in the state");
                 return;
             }
 
@@ -195,7 +195,7 @@
 
             // To get count of contacts in all cities
             foreach (KeyValuePair<string, List<ContactDetails>> keyValuePair in stateToContactMap)
-                Console.WriteLine("No of contacts in city {0} is {1}", keyValuePair.Key, keyValuePair.Value.Count());
+                Console.WriteLine("Nunber of contacts in state {0} is {1}", keyValuePair.Key, keyValuePair.Value.Count());
         }
 
         /// <summary>
@@ -229,10 +229,10 @@
                 // If no contacts exist
                 if (searchResult.Count() == 0)
                 {
-                    Console.WriteLine("\nNo contacts found in addressbook {0} of given search", nameOfAddressBook);
+                    Console.WriteLine("\nNo contacts found of given search");
                     return;
                 }
-                Console.Write("\nThe contacts found in addressbook {0} of given search are :", nameOfAddressBook);
+                Console.Write("\nThe contacts found in of given search are :");
 
                 // Display the search results
                 foreach (ContactDetails contact in searchResult)
@@ -242,7 +242,7 @@
             }
             catch
             {
-                Console.WriteLine("No contacts found in addressbook {0} of given search", nameOfAddressBook);
+                Console.WriteLine("No contacts found of given search");
                 return;
             }
 
