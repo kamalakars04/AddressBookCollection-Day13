@@ -79,37 +79,37 @@
             Console.WriteLine("\nEnter the city name to search for contact");
             string cityName = Console.ReadLine().ToLower();
 
+            // If the city doesnt have any contacts
+            if (!cityToContactMap.ContainsKey(cityName) || cityToContactMap[cityName].Count == 0)
+            {
+                Console.WriteLine("\nNo record found");
+                return;
+            }
+
             // Get the person name to be searched
             Console.WriteLine("\nEnter the person firstname to be searched");
             string firstName = Console.ReadLine().ToLower();
             Console.WriteLine("\nEnter the person lastname to be searched");
             string lastName = Console.ReadLine().ToLower();
+           
+            // Get the list of contacts whose city and name matches with search
+            var searchResult = cityToContactMap[cityName].FindAll(contact => contact.firstName.ToLower() == firstName
+                                                                    && contact.lastName.ToLower() == lastName);
 
-            try
-            {
-                // Get the list of contacts whose city and name matches with search
-                var searchResult = cityToContactMap[cityName].FindAll(contact => contact.firstName.ToLower() == firstName
-                                                                      && contact.lastName.ToLower() == lastName);
-
-                // If no contacts exist
-                if (searchResult.Count() == 0)
-                {
-                    Console.WriteLine("\nNo contacts found of given search");
-                    return;
-                }
-                Console.Write("\nThe contacts found in of given search are :");
-
-                // Display the search results
-                foreach (ContactDetails contact in searchResult)
-                {
-                    AddressBook.ToString(contact);
-                }
-            }
-            catch
+            // If no contacts exist
+            if (searchResult.Count() == 0)
             {
                 Console.WriteLine("\nNo contacts found of given search");
                 return;
             }
+            Console.Write("\nThe contacts found in of given search are :");
+
+            // Display the search results
+            foreach (ContactDetails contact in searchResult)
+            {
+                AddressBook.ToString(contact);
+            }
+           
         }
 
         /// <summary>
