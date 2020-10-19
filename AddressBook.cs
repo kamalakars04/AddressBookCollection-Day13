@@ -125,19 +125,19 @@
             // If the List doesnt have any contacts
             // Else get the name to search for details
             if (contactList.Count() == 0)
-                Console.WriteLine("No saved contacts");
-            else
             {
-                Console.WriteLine("\nEnter the name of candidate to get Details");
-                string name = Console.ReadLine().ToLower();
-                logger.Info("User searched for a contact " + name);
-
-                // Search the contact by name
-                ContactDetails contact = SearchByName(name);
-
-                // Print the details of the contact after search
-                ToString(contact);
+                Console.WriteLine("No saved contacts");
+                return;
             }
+            Console.WriteLine("\nEnter the name of candidate to get Details");
+            string name = Console.ReadLine().ToLower();
+            logger.Info("User searched for a contact " + name);
+
+            // Search the contact by name
+            ContactDetails contact = SearchByName(name);
+
+            // Print the details of the contact after search
+            contact.toString();
         }
 
         /// <summary>
@@ -161,7 +161,7 @@
             ContactDetails contact = SearchByName(name);
 
             // To print details of searched contact
-            ToString(contact);
+            contact.toString();
             
             // If contact doesnt exist
             if (contact == null)
@@ -284,7 +284,7 @@
             ContactDetails contact = SearchByName(name);
 
             // Print the details of contact for confirmation
-            ToString(contact);
+            contact.toString();
 
             // If contact doesnt exist then exit
             if (contact == null)
@@ -321,33 +321,7 @@
             logger.Info("User viewd all contacts");
 
             // Display all contact details in list
-            foreach (ContactDetails contact in contactList)
-                ToString(contact);
-        }
-
-        /// <summary>
-        /// Display the details of given contact
-        /// </summary>
-        /// <param name="contactSerialNum">The contact serial number in list.</param>
-        public static void ToString(ContactDetails contact)
-        {
-            if (contact == null)
-            {
-                Console.WriteLine("Contact Not found");
-                return;
-            }
-            
-            // Display all the atributes of contact
-            int rowNum = 1;
-            Console.WriteLine("\nname of contact is {0}", contact.firstName + " " + contact.lastName);
-            Console.WriteLine("{0}-firstname is {1}", rowNum++, contact.firstName);
-            Console.WriteLine("{0}-lastname is {1}", rowNum++, contact.lastName);
-            Console.WriteLine("{0}-address is {1}", rowNum++, contact.address);
-            Console.WriteLine("{0}-city is {1}", rowNum++, contact.city);
-            Console.WriteLine("{0}-state is {1}", rowNum++, contact.state);
-            Console.WriteLine("{0}-zip is {1}", rowNum++, contact.zip);
-            Console.WriteLine("{0}-phoneNumber is {1}", rowNum++, contact.phoneNumber);
-            Console.WriteLine("{0}-email is {1}", rowNum++, contact.email);
+            contactList.ForEach(contact => contact.toString());
         }
 
         /// <summary>

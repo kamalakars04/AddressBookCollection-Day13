@@ -76,5 +76,30 @@
                         && contact.nameOfAddressBook == this.nameOfAddressBook);
             }
         }
+        /// <summary>
+        /// Converts to string.
+        /// </summary>
+        /// <param name="contact">The contact.</param>
+        public void toString()
+        {
+            // For null contact
+            if(this.nameOfAddressBook == null)
+            {
+                Console.WriteLine("No record found");
+                return;
+            }
+
+            // Display all the atributes of contact
+            int rowNum = 1;
+            Console.WriteLine("\nname of contact is {0}", this.firstName + " " + lastName);
+            Console.WriteLine("{0}-firstname is {1}", rowNum++, firstName);
+            Console.WriteLine("{0}-lastname is {1}", rowNum++, lastName);
+            Console.WriteLine("{0}-address is {1}", rowNum++, address);
+            Console.WriteLine("{0}-city is {1}", rowNum++, city);
+            Console.WriteLine("{0}-state is {1}", rowNum++, state);
+            Console.WriteLine("{0}-zip is {1}", rowNum++, zip);
+            Console.WriteLine("{0}-phoneNumber is {1}", rowNum++, phoneNumber);
+            Console.WriteLine("{0}-email is {1}", rowNum++, email);
+        }
     }
 }
