@@ -136,6 +136,13 @@
             // Search the contact by name
             ContactDetails contact = SearchByName(name);
 
+            // If contact doesnt exist
+            if (contact == null)
+            {
+                Console.WriteLine("No record found");
+                return;
+            }
+
             // Print the details of the contact after search
             contact.toString();
         }
@@ -160,12 +167,16 @@
             // Search the name
             ContactDetails contact = SearchByName(name);
 
+            // If contact doesnt exist
+            if (contact == null)
+            {
+                Console.WriteLine("No record found");
+                return;
+            }
+
             // To print details of searched contact
             contact.toString();
             
-            // If contact doesnt exist
-            if (contact == null)
-                return;
             int updateAttributeNum = 0;
 
             // Getting the attribute to be updated
@@ -283,12 +294,15 @@
             // Search for the contact
             ContactDetails contact = SearchByName(name);
 
+            // If contact doesnt exist
+            if (contact == null)
+            {
+                Console.WriteLine("No record found");
+                return;
+            }
+
             // Print the details of contact for confirmation
             contact.toString();
-
-            // If contact doesnt exist then exit
-            if (contact == null)
-                return;
 
             // Asking for confirmation to delete contact
             // If user says yes(y) then delete the contact
@@ -296,7 +310,9 @@
             switch (Console.ReadLine().ToLower())
             {
                 case "y":
-                    contactList.RemoveAt(contactSerialNum);
+                    contactList.Remove(contact);
+                    AddressBookDetails.cityToContactMap[contact.city].Remove(contact);
+                    AddressBookDetails.stateToContactMap[contact.state].Remove(contact);
                     Console.WriteLine("Contact deleted");
                     logger.Info("User removed the contact");
                     break;

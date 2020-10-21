@@ -254,7 +254,18 @@
             //search for address book with given name
             try
             {
-                addressBookList.Remove(Console.ReadLine());
+                string addressBookName = Console.ReadLine();
+
+                // Remove AddressBook with given name
+                addressBookList.Remove(addressBookName);
+
+                // Remove contacts from city dictionary
+                foreach (KeyValuePair<string, List<ContactDetails>> keyValuePair in cityToContactMap)
+                    cityToContactMap[keyValuePair.Key].RemoveAll(contact => contact.nameOfAddressBook == addressBookName);
+
+                // Remove contacts from state dictionary
+                foreach (KeyValuePair<string, List<ContactDetails>> keyValuePair in stateToContactMap)
+                    stateToContactMap[keyValuePair.Key].RemoveAll(contact => contact.nameOfAddressBook == addressBookName);
                 Console.WriteLine("Address book deleted successfully");
                 logger.Info("User deleted the AddressBook " + nameOfAddressBook);
             }
