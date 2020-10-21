@@ -296,7 +296,9 @@
             switch (Console.ReadLine().ToLower())
             {
                 case "y":
-                    contactList.RemoveAt(contactSerialNum);
+                    contactList.Remove(contact);
+                    AddressBookDetails.cityToContactMap[contact.city].Remove(contact);
+                    AddressBookDetails.stateToContactMap[contact.state].Remove(contact);
                     Console.WriteLine("Contact deleted");
                     logger.Info("User removed the contact");
                     break;
